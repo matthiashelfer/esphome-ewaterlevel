@@ -42,7 +42,7 @@ bool EWaterLevel::parse_device(const esp32_ble_tracker::ESPBTDevice &device) {
     if (device.address_uint64() != this->address_) {
       return false;
     }
-    ESP_LOGVV(TAG, "parse_device(): MAC address %s found.", device.address_str().c_str());
+    ESP_LOGVV(TAG, "parse_device(): MAC address %s found.", device.address_str_to().c_str());
   }
 
   const esp_ble_gap_cb_param_t::ble_scan_result_evt_param &param = device.get_scan_result();
@@ -55,20 +55,20 @@ bool EWaterLevel::parse_device(const esp32_ble_tracker::ESPBTDevice &device) {
     }
 
     if (this->address_ == 0) {
-      ESP_LOGI(TAG, "E-Waterlevel SENSOR FOUND: %s", device.address_str().c_str());
+      ESP_LOGI(TAG, "E-Waterlevel SENSOR FOUND: %s", device.address_str_to().c_str());
     }
 
-    ESP_LOGV(TAG, "[%s] Sensor data: %s", device.address_str().c_str(),
+    ESP_LOGV(TAG, "[%s] Sensor data: %s", device.address_str_to ().c_str(),
              format_hex_pretty(param.ble_adv + 9, param.adv_data_len + param.scan_rsp_len - 10).c_str());
-    ESP_LOGD(TAG, "[%s] HW: V%u.%u SW: V%u.%u, ShortPin: %.1fcm, LongPin: %.1fcm", device.address_str().c_str(),
+    ESP_LOGD(TAG, "[%s] HW: V%u.%u SW: V%u.%u, ShortPin: %.1fcm, LongPin: %.1fcm", device.address_str_to().c_str(),
              data->version_hw_high, data->version_hw_low, data->version_sw_high, data->version_sw_low,
              data->read_short_pin_length(), data->read_long_pin_length());
-    ESP_LOGD(TAG, "[%s] State_A: %s, State_B: %s, State_C: %s", device.address_str().c_str(),
+    ESP_LOGD(TAG, "[%s] State_A: %s, State_B: %s, State_C: %s", device.address_str_to().c_str(),
              format_hex(&data->state_a, 1).c_str(), format_hex(&data->state_b, 1).c_str(),
              format_hex(&data->state_c, 1).c_str());
-    ESP_LOGI(TAG, "[%s] Time: %.2f, Bat: %.3fV, Value: %.3f", device.address_str().c_str(), data->read_counter(),
+    ESP_LOGI(TAG, "[%s] Time: %.2f, Bat: %.3fV, Value: %.3f", device.address_str_to().c_str(), data->read_counter(),
              data->read_battery_voltage(), data->read_value());
-    ESP_LOGI(TAG, "[%s] Waterlevel: %.1fcm, Percentage: %.1f%%", device.address_str().c_str(),
+    ESP_LOGI(TAG, "[%s] Waterlevel: %.1fcm, Percentage: %.1f%%", device.address_str_to().c_str(),
              this->water_height_in_cm_(data),
              clamp_percentage(this->water_height_in_cm_(data) / this->pin_length_(data) * 100.0f));
 
